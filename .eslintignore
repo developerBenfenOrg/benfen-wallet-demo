@@ -1,6 +1,0 @@
-node_modules
-dist
-build
-.eslintrc.js
-postcss.config.js
-prettier.config.js
