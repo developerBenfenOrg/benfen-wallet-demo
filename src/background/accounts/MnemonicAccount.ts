@@ -69,6 +69,24 @@ export class MnemonicAccount
     super({ type: 'mnemonic-derived', id, cachedData });
   }
 
+  async isLocked(): Promise<boolean> {
+    return !(await this.getEphemeralValue());
+  }
+
+  async passwordUnlock(password?: string): Promise<void> {
+    const mnemonicSource = await this.#getMnemonicSource();
+    if ((await mnemonicSource.isLocked()) && !password) {
+      throw new Error('Missing password to unlock the account');
+    }
+    const { derivationPath } = await this.getStoredData();
+    if (password) {
+      await mnemonicSource.unlock(password);
+    }
+    await this.setEphemeralValue({
+      keyPair: (await mnemonicSource.deriveKeyPair(derivationPath)).getSecretKey(),
+    });
+  }
+
   async verifyPassword(password: string): Promise<void> {
     const mnemonicSource = await this.#getMnemonicSource();
     await mnemonicSource.verifyPassword(password);

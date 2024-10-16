@@ -117,6 +117,10 @@ export class MnemonicAccountSource extends AccountSource<
     super({ type: 'mnemonic', id });
   }
 
+  async isLocked() {
+    return (await this.getEphemeralValue()) === null;
+  }
+
   async unlock(password: string) {
     await this.setEphemeralValue(await this.#decryptStoredData(password));
     accountSourcesEvents.emit('accountSourceStatusUpdated', { accountSourceID: this.id });

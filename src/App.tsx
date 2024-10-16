@@ -1,9 +1,11 @@
-import { NetworkConfig, BenfenClientProvider } from '@benfen/bfc.js/dapp-kit';
+import { NetworkConfig, BenfenClientProvider, WalletProvider } from '@benfen/bfc.js/dapp-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 
 import Layout from './layout';
+import DApp from './pages/dapp.tsx';
 import Welcome from './pages/welcome';
 import { useAppStore } from '@/store/app';
 import { BENFEN_CHAINS } from '@/utils/constants';
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
         path: '/welcome',
         element: <Welcome />,
       },
+      {
+        path: '/dapp',
+        element: (
+          <WalletProvider>
+            <DApp />
+          </WalletProvider>
+        ),
+      },
     ],
   },
 ]);
@@ -63,6 +73,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BenfenClientProvider network={network} networks={networks}>
+        <Toaster />
         <RouterProvider router={router}></RouterProvider>
       </BenfenClientProvider>
     </QueryClientProvider>
