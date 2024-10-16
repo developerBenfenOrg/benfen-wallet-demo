@@ -5,7 +5,7 @@ import { type AccountSourceSerialized } from './account-sources/AccountSource';
 import { type AccountType, type SerializedAccount } from './accounts/Account';
 import { getFromLocalStorage, setToLocalStorage } from './storage-utils';
 
-const dbName = 'SuiWallet DB';
+const dbName = 'Benfen Wallet Demo DB';
 const dbLocalStorageBackupKey = 'indexed-db-backup';
 
 export const settingsKeys = {
