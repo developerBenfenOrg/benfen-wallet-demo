@@ -26,3 +26,19 @@ export const BENFEN_CHAINS = {
 };
 
 export const SYSTEM_STATE_OBJECT_ID = normalizeHexAddress('0x5');
+
+export const TOKEN_INFO = {
+  BFC: {
+    address: 'BFC000000000000000000000000000000000000000000000000000000000000000268e4::bfc::BFC',
+    decimals: 9,
+    symbol: 'BFC',
+    logoURI: 'https://obstatic.243096.com/mili/images/currency/chain/Benfen2.png',
+  },
+  BUSD: {
+    address: 'BFC00000000000000000000000000000000000000000000000000000000000000c8e30a::busd::BUSD',
+    decimals: 9,
+    symbol: 'BUSD',
+    logoURI:
+      'https://obstatic.243096.com/download/token/images/BenfenTEST/BFC00000000000000000000000000000000000000000000000000000000000000c8e30a::busd::BUSD.png',
+  },
+};

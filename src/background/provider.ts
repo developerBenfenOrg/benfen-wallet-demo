@@ -133,6 +133,21 @@ export class BenfenDemoWallet implements Wallet {
 
   #signTransactionBlock: BenfenSignTransactionBlockMethod = async ({ transactionBlock }) => {
     transactionBlock.setSenderIfNotSet(await this.#account!.address);
+    const payment = transactionBlock.blockData.gasConfig.payment;
+    if (payment && payment.length > 0) {
+      const coin = await this.#client?.getObject({
+        id: payment[0].objectId,
+        options: { showContent: true, showType: true },
+      });
+      console.log(
+        'gas data',
+        'type',
+        coin?.data?.type,
+        'budget',
+        transactionBlock.blockData.gasConfig.budget,
+      );
+    }
+
     const bytes = await transactionBlock.build({ client: this.#client });
     const signature = await this.#account!.signData(
       messageWithIntent(IntentScope.TransactionData, bytes),

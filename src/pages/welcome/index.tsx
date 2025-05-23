@@ -1,5 +1,5 @@
 import { useBenfenClient } from '@benfen/bfc.js/dapp-kit';
-import { BFC_TYPE_ARG, hex2BfcAddress } from '@benfen/bfc.js/utils';
+import { hex2BfcAddress } from '@benfen/bfc.js/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -24,11 +24,11 @@ const Welcome = () => {
   const [accountToUnlock, setAccountToUnlock] = useState<MnemonicAccount>();
   const { account, setAccount, rpc } = useAppStore();
 
-  const { data: balance, refetch: refetchBalance } = useQuery({
+  const { data: balances, refetch: refetchBalance } = useQuery({
     queryKey: ['queryBalance', account?.address],
     enabled: !!account?.address,
     queryFn: async () => {
-      return client.getBalance({ coinType: BFC_TYPE_ARG, owner: account!.address });
+      return client.getAllBalances({ owner: account!.address });
     },
     refetchInterval: 5000,
   });
@@ -118,10 +118,12 @@ const Welcome = () => {
             <span>PublicKey: </span>
             <span>{account.publicKey}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span>Balance: </span>
-            <span>{formatAmount(balance?.totalBalance || '0')}</span>
-          </div>
+          {balances?.map((i) => (
+            <div className="flex items-center gap-2" key={i.coinType}>
+              <span>{i.coinType}</span>
+              <span>{formatAmount(i?.totalBalance || '0')}</span>
+            </div>
+          ))}
           <button
             className="cursor-pointer rounded bg-black p-4 text-white"
             disabled={faucetLoading}

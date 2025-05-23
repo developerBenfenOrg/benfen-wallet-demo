@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
       // TODO: re-enable/remove when api is healthy ===>
       retry: false,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
+      refetchOnMount: true,
       //<======
     },
   },

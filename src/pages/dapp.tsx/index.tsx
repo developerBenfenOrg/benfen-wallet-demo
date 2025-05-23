@@ -1,13 +1,21 @@
-import { useConnectWallet, useCurrentAccount, useWallets } from '@benfen/bfc.js/dapp-kit';
+import {
+  useBenfenClient,
+  useConnectWallet,
+  useCurrentAccount,
+  useWallets,
+} from '@benfen/bfc.js/dapp-kit';
 import { hex2BfcAddress } from '@benfen/bfc.js/utils';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import StakeCoin from './components/stake-coin';
+import SwapBusd from './components/swap-busd';
 import TransferCoin from './components/transfer-coin';
 import { getAllAccounts } from '@/background/accounts';
 import { initializeProvider } from '@/background/provider';
 import { useAppStore } from '@/store/app';
+import { formatAmount } from '@/utils/helper';
 
 const DApp = () => {
   const navigate = useNavigate();
@@ -15,6 +23,16 @@ const DApp = () => {
   const wallets = useWallets();
   const currentAccount = useCurrentAccount();
   const { mutateAsync: connect } = useConnectWallet();
+  const client = useBenfenClient();
+
+  const { data: balances } = useQuery({
+    queryKey: ['queryBalance', currentAccount?.address],
+    enabled: !!currentAccount?.address,
+    queryFn: async () => {
+      return client.getAllBalances({ owner: currentAccount!.address });
+    },
+    refetchInterval: 5000,
+  });
 
   const [loading, setLoading] = useState(true);
 
@@ -43,8 +61,17 @@ const DApp = () => {
             <span>Address: </span>
             <span>{hex2BfcAddress(currentAccount.address)}</span>
           </div>
-          <TransferCoin />
-          <StakeCoin />
+          {balances?.map((i) => (
+            <div className="flex items-center gap-2" key={i.coinType}>
+              <span>{i.coinType}</span>
+              <span>{formatAmount(i?.totalBalance || '0')}</span>
+            </div>
+          ))}
+          <div className={'flex items-start gap-10'}>
+            <TransferCoin />
+            <StakeCoin />
+            <SwapBusd />
+          </div>
         </div>
       ) : (
         <div className="flex flex-col items-stretch gap-5">
